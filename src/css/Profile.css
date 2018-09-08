@@ -1,0 +1,37 @@
+.profile {
+  padding: 25px;
+  text-align: center;
+}
+
+.profile-form-container {
+  text-align: left;
+  padding: 20px;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-bottom: 30px;
+}
+
+.profile-row {
+  margin-bottom: 20px;
+}
+.profile-pic-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.profile-image-container {
+  border-radius: 50%;
+  height: 200px;
+  width: 200px;
+  overflow: hidden;
+  border: 3px dashed #E0E0E0;
+  margin: 15px;
+}
+
+.profile-image {
+  display: inline;
+  margin: 0 auto;
+  height: 100%;
+  width: auto;
+}

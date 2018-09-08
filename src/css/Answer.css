@@ -1,0 +1,38 @@
+.profile {
+  padding: 70px;
+  text-align: center;
+}
+
+.profile-form-container {
+  text-align: left;
+  padding: 20px;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-bottom: 30px;
+}
+
+.profile-row {
+  margin-bottom: 20px;
+}
+.profile-pic-container {
+  align-self:right;
+}
+.profile-image-container {
+  border-radius: 50%;
+  height: 200px;
+  width: 200px;
+  overflow: hidden;
+  border: 3px dashed #E0E0E0;
+  margin: 15px;
+}
+
+.profile-image {
+  width: 100%;
+  align-self: center;
+}
+
+.preview {
+  height:150px;
+  width:150px;
+  margin:30px;
+}

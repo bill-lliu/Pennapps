@@ -1,0 +1,12 @@
+.auth-button-container {
+  line-height: 64px;
+}
+
+.auth-button * {
+  color: #FFF!important;
+}
+
+.auth-button:hover * {
+  transition: 0.5s;
+  color: #E1F5FE!important;
+}
