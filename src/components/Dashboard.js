@@ -50,7 +50,7 @@ class Dashboard extends Component {
 
   render() {
     const data = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      labels: ['Sept 05', 'Sept 06', 'Sept 07', 'Sept 08', 'Today'],
       datasets: [
         {
           label: 'Sugar',

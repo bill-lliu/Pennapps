@@ -36,7 +36,7 @@ class Header extends Component {
       <div className="navigation">
         <Link to="/main">
           <AppBar
-            title="Sugar Cubed"
+            title="Sugar³"
             style={{ backgroundColor: '#880E4F' }}
             iconElementLeft={
               <IconButton onClick={() => this.setState({ drawerOpen: !this.state.drawerOpen })}>

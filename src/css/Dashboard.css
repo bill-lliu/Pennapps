@@ -23,7 +23,7 @@
 .request-field {
   font-size: 4em;
 }
-.Header-headline-0-1-5{
+.Header-headline-0-1-5, .t-headline-0-1-5{
   display: inline!important;
 }
 
@@ -49,6 +49,9 @@ hr {
 
 .yikes hr{
   border-color: pink!important;
+}
+.yikes input{
+  color: white!important;
 }
 .pprofile-pic-container {
   display: flex;
