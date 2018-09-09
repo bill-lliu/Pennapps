@@ -37,7 +37,7 @@ class Header extends Component {
         <Link to="/main">
           <AppBar
             title="Sugar Cubed"
-            style={{ backgroundColor: '#2196F3' }}
+            style={{ backgroundColor: '#880E4F' }}
             iconElementLeft={
               <IconButton onClick={() => this.setState({ drawerOpen: !this.state.drawerOpen })}>
                 <MenuIcon />

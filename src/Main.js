@@ -9,7 +9,7 @@ class Main extends Component {
     return (
       <main>
         <Switch>
-          <Route exact path="/" component={Home} />
+          <Route exact path="/main" component={Dashboard} />
           <Route path="/dashboard" component={Dashboard} />
         </Switch>
       </main>

@@ -23,7 +23,9 @@
 .request-field {
   font-size: 4em;
 }
-
+.Header-headline-0-1-5{
+  display: inline!important;
+}
 
 .new-request-input {
   width: 100px;
@@ -45,8 +47,8 @@ hr {
     padding: 0;
 }
 
-.yikes input{
-  color: white!important;
+.yikes hr{
+  border-color: pink!important;
 }
 .pprofile-pic-container {
   display: flex;

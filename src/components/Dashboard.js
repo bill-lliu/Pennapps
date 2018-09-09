@@ -9,7 +9,7 @@ import Snackbar from 'material-ui/Snackbar';
 
 import { Stitch } from 'mongodb-stitch-browser-sdk';
 import { Line } from 'react-chartjs-2';
-
+import { NutritionLabel } from 'react-fda-nutrition-facts';
 import '../css/Dashboard.css';
 
 class Dashboard extends Component {
@@ -104,12 +104,26 @@ class Dashboard extends Component {
             <Row>
               <Col md={6}>
                 <h3 className="jesse" > This is the name of the food you just ate</h3>
-                <ul>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                </ul>
+                <div style={{ marginLeft: 50, marginRight: 50 }}>
+                  <NutritionLabel
+                    servingSize="1 cup (228g)"
+                    servingsPerContainer={2}
+                    calories={260}
+                    totalFat={13}
+                    saturatedFat={5}
+                    transFat={2}
+                    cholesterol={30}
+                    sodium={660}
+                    totalCarbs={31}
+                    dietaryFiber={0}
+                    sugars={5}
+                    protein={5}
+                    vitaminA={4}
+                    vitaminC={2}
+                    calcium={15}
+                    iron={4}
+                  />
+                </div>
               </Col>
               <Col md={6}>
                 <h3 className="jesse" > This is the name of the food you just ate</h3>
