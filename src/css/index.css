@@ -5,8 +5,8 @@ body {
   background: repeating-linear-gradient(
     45deg,
     #F8BBD0,
-    #F8BBD0 30px,
-    #FCE4EC 30px,
+    #F8BBD0 25px,
+    #FCE4EC 25px,
     #FCE4EC 100px
   );
   min-height:100vh;

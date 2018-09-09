@@ -19,13 +19,6 @@ const db = Stitch.defaultAppClient.getServiceClient(
 ).db('sugar-cubed');
 
 class Dashboard extends Component {
-  static getPercent(data, id, rec) {
-    const nutrient = data.full_nutrients.find(e => e.attr_id == id);
-    if (nutrient == undefined) {
-      return 0;
-    }
-    return (nutrient.value / 40 / rec * 100).toFixed(2);
-  }
   constructor(props) {
     super(props);
 
@@ -41,19 +34,43 @@ class Dashboard extends Component {
     } else {
       const scans = db.collection('scans');
       scans.aggregate([]).asArray().then((data) => {
-        console.log(data);
         this.setState({ data });
-        console.log(this.state.data);
       });
     }
   }
+  static getPercent(data, id, rec) {
+    const nutrient = data.full_nutrients.find(e => e.attr_id == id);
+    if (nutrient === undefined) {
+      return 0;
+    }
+    return (nutrient.value / 40 / rec * 100).toFixed(2);
+  }
 
   render() {
+    const graphData = {
+      Sun: {}, Mon: {}, Tues: {}, Wed: {}, Thu: {}, Fri: {}, Sat: {},
+    };
+
+    this.state.data.forEach((scan) => {
+      const day = new Date(scan.ts.high_ * 1000).toUTCString().split(',')[0];
+      // console.log(day);
+      if (graphData[day].sugar) {
+        graphData[day].sugar += scan['nutrients-data'].nf_sugars;
+      } else {
+        graphData[day].sugar = scan['nutrients-data'].nf_sugars;
+      }
+      if (graphData[day].salt) {
+        graphData[day].salt += scan['nutrients-data'].nf_sodium / 1000 * 2.5;
+      } else {
+        graphData[day].salt = scan['nutrients-data'].nf_sodium / 1000 * 2.5;
+      }
+    });
     const data = {
       labels: ['Sept 05', 'Sept 06', 'Sept 07', 'Sept 08', 'Today'],
       datasets: [
         {
           label: 'Sugar',
+          yAxisID: 'SUGAR',
           fill: false,
           lineTension: 0.1,
           backgroundColor: 'rgba(75,192,192,0.4)',
@@ -71,10 +88,11 @@ class Dashboard extends Component {
           pointHoverBorderWidth: 2,
           pointRadius: 1,
           pointHitRadius: 10,
-          data: [65, 59, 80, 81, 56, 55, 40],
+          data: [graphData.Wed.sugar, graphData.Thu.sugar, graphData.Fri.sugar, graphData.Sat.sugar, graphData.Sun.sugar],
         },
         {
           label: 'Salt',
+          yAxisID: 'SALT',
           fill: false,
           lineTension: 0.1,
           backgroundColor: 'rgba(202, 219, 52,0.4)',
@@ -92,31 +110,41 @@ class Dashboard extends Component {
           pointHoverBorderWidth: 2,
           pointRadius: 1,
           pointHitRadius: 10,
-          data: [10, 87, 43, 32, 34, 42, 14],
-        },
-        {
-          label: 'Fat',
-          fill: false,
-          lineTension: 0.1,
-          backgroundColor: 'rgba(224, 42, 212,0.4)',
-          borderColor: 'rgba(224, 42, 212,1)',
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
-          pointBorderColor: 'rgba(224, 42, 212,1)',
-          pointBackgroundColor: '#fff',
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: 'rgba(229, 255, 0,1)',
-          pointHoverBorderColor: 'rgba(224, 42, 212,1)',
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: [45, 34, 34, 53, 19, 23, 43],
+          data: [graphData.Wed.salt, graphData.Thu.salt, graphData.Fri.salt, graphData.Sat.salt, graphData.Sun.salt],
         },
       ],
     };
+
+    const options = {
+      tooltips: {
+        callbacks: {
+          label(tooltipItems, data) {
+            return `${data.datasets[tooltipItems.datasetIndex].label}: ${tooltipItems.yLabel} grams`;
+          },
+        },
+
+      },
+      scales: {
+        yAxes: [{
+          id: 'SUGAR',
+          type: 'linear',
+          position: 'left',
+          scaleLabel: {
+            display: true,
+            labelString: 'Grams of Sugar',
+          },
+        }, {
+          id: 'SALT',
+          type: 'linear',
+          position: 'right',
+          scaleLabel: {
+            display: true,
+            labelString: 'Grams of Salt',
+          },
+        }],
+      },
+    };
+
     return (
       <div className="dashboard">
         <div className="new-request">
@@ -126,7 +154,6 @@ class Dashboard extends Component {
               {
               this.state.data.filter(scan => scan.eaten).map(scan => (
                 <Col md={6}>
-                  {console.log(scan['nutrients-data'].full_nutrients[9])}
                   <h3 className="jesse" >{scan['display-name']}</h3>
                   <span>{new Date(scan.ts.high_ * 1000).toUTCString()}</span>
                   <div style={{ marginLeft: 50, marginRight: 50 }}>
@@ -157,7 +184,6 @@ class Dashboard extends Component {
               {
                 this.state.data.filter(scan => !scan.eaten).map(scan => (
                   <Col md={6}>
-                    {console.log(scan['nutrients-data'].full_nutrients[9])}
                     <h3 className="jesse" >{scan['display-name']}</h3>
                     <span>{new Date(scan.ts.high_ * 1000).toUTCString()}</span>
                     <div style={{ marginLeft: 50, marginRight: 50 }}>
@@ -184,7 +210,7 @@ class Dashboard extends Component {
               }
             </Row>
             <h1 style={{ textTransform: 'uppercase' }}>💩 you ate in graph format</h1>
-            <Line data={data} />
+            <Line data={data} options={options} />
 
           </Paper>
         </div>

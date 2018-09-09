@@ -10,7 +10,6 @@
     "react": "^16.2.0",
     "react-ace": "^5.9.0",
     "react-app-env": "^1.2.0",
-    "react-chartjs": "^1.1.1",
     "react-chartjs-2": "^2.7.4",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.2.0",
