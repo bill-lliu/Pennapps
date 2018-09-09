@@ -8,37 +8,27 @@ import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui/svg-icons/navigation/menu';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
 
-import * as firebase from 'firebase';
+import {
+  Stitch,
+  RemoteMongoClient,
+  GoogleRedirectCredential,
+  FacebookRedirectCredential,
+} from 'mongodb-stitch-browser-sdk';
 
 import AuthButton from './components/AuthButton';
 
 import './css/Header.css';
 
+const appId = 'ios-qjlqp';
+const client = Stitch.initializeDefaultAppClient(appId);
+
 class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      signedIn: false,
+      signedIn: client.auth.isLoggedIn,
       drawerOpen: false,
     };
-  }
-  componentWillMount() {
-    this.authListener = this.authListener.bind(this);
-    this.authListener();
-  }
-
-  componentWillUnmount() {
-    this.authListener = undefined;
-  }
-
-  authListener() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({ signedIn: true });
-      } else {
-        this.setState({ signedIn: false });
-      }
-    });
   }
 
   render() {
@@ -63,9 +53,6 @@ class Header extends Component {
           </IconButton>
           <Link to="/dashboard">
             <MenuItem>Dashboard</MenuItem>
-          </Link>
-          <Link to="/profile">
-            <MenuItem>Profile</MenuItem>
           </Link>
         </Drawer>
       </div>

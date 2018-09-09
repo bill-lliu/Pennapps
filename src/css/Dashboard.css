@@ -28,7 +28,26 @@
 .new-request-input {
   width: 100px;
 }
+ul {
+  list-style-type: circle;
+}
+.jesse {
+  font-size: 1.5em;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
 
+.yikes input{
+  color: white!important;
+}
 .pprofile-pic-container {
   display: flex;
   flex-direction: column;
