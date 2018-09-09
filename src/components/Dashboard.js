@@ -7,23 +7,44 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 
-import { Stitch } from 'mongodb-stitch-browser-sdk';
+import { Stitch, RemoteMongoClient } from 'mongodb-stitch-browser-sdk';
 import { Line } from 'react-chartjs-2';
 import { NutritionLabel } from 'react-fda-nutrition-facts';
 import '../css/Dashboard.css';
 
+
+const db = Stitch.defaultAppClient.getServiceClient(
+  RemoteMongoClient.factory,
+  'mongodb-atlas',
+).db('sugar-cubed');
+
 class Dashboard extends Component {
+  static getPercent(data, id, rec) {
+    const nutrient = data.full_nutrients.find(e => e.attr_id == id);
+    if (nutrient == undefined) {
+      return 0;
+    }
+    return (nutrient.value / 40 / rec * 100).toFixed(2);
+  }
   constructor(props) {
     super(props);
 
     this.state = {
       user: Stitch.defaultAppClient.auth.currentUser,
+      data: [],
     };
   }
 
   componentWillMount() {
     if (!this.state.user) {
       this.props.history.push('/');
+    } else {
+      const scans = db.collection('scans');
+      scans.aggregate([]).asArray().then((data) => {
+        console.log(data);
+        this.setState({ data });
+        console.log(this.state.data);
+      });
     }
   }
 
@@ -102,97 +123,66 @@ class Dashboard extends Component {
           <Paper className="new-request-container" zDepth={1}>
             <h1 style={{ textTransform: 'uppercase' }}>💩 you ate</h1>
             <Row>
-              <Col md={6}>
-                <h3 className="jesse" > This is the name of the food you just ate</h3>
-                <div style={{ marginLeft: 50, marginRight: 50 }}>
-                  <NutritionLabel
-                    servingSize="1 cup (228g)"
-                    servingsPerContainer={2}
-                    calories={260}
-                    totalFat={13}
-                    saturatedFat={5}
-                    transFat={2}
-                    cholesterol={30}
-                    sodium={660}
-                    totalCarbs={31}
-                    dietaryFiber={0}
-                    sugars={5}
-                    protein={5}
-                    vitaminA={4}
-                    vitaminC={2}
-                    calcium={15}
-                    iron={4}
-                  />
-                </div>
-              </Col>
-              <Col md={6}>
-                <h3 className="jesse" > This is the name of the food you just ate</h3>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-              </Col>
+              {
+              this.state.data.filter(scan => scan.eaten).map(scan => (
+                <Col md={6}>
+                  {console.log(scan['nutrients-data'].full_nutrients[9])}
+                  <h3 className="jesse" >{scan['display-name']}</h3>
+                  <span>{new Date(scan.ts.high_ * 1000).toUTCString()}</span>
+                  <div style={{ marginLeft: 50, marginRight: 50 }}>
+                    <NutritionLabel
+                      servingSize={`${scan['nutrients-data'].serving_weight_grams} grams`}
+                      calories={scan['nutrients-data'].nf_calories}
+                      totalFat={scan['nutrients-data'].nf_total_fat}
+                      saturatedFat={scan['nutrients-data'].nf_saturated_fat}
+                      transFat={scan['nutrients-data'].nf_total_fat - scan['nutrients-data'].nf_saturated_fat}
+                      cholesterol={scan['nutrients-data'].nf_cholesterol}
+                      sodium={scan['nutrients-data'].nf_sodium}
+                      totalCarbs={scan['nutrients-data'].nf_total_carbohydrates}
+                      dietaryFiber={scan['nutrients-data'].nf_dietary_fibers}
+                      sugars={scan['nutrients-data'].nf_sugars}
+                      protein={scan['nutrients-data'].nf_protein}
+                      vitaminA={Dashboard.getPercent(scan['nutrients-data'], 318, 700)}
+                      calcium={Dashboard.getPercent(scan['nutrients-data'], 301, 1000)}
+                      vitaminC={Dashboard.getPercent(scan['nutrients-data'], 401, 90)}
+                      iron={Dashboard.getPercent(scan['nutrients-data'], 303, 16)}
+                    />
+                  </div>
+                </Col>
+              ))
+            }
             </Row>
-            <hr />
-            <Row>
-              <Col md={6}>
-                <h3 className="jesse" > This is the name of the food you just ate</h3>
-                <ul>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                </ul>
-              </Col>
-              <Col md={6}>
-                <h3 className="jesse" > This is the name of the food you just ate</h3>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-              </Col>
-            </Row>
-            <hr />
             <h1 style={{ textTransform: 'uppercase' }}>💩 you didn't eat</h1>
             <Row>
-              <Col md={6}>
-                <h3 className="jesse" > This is the name of the food you just ate</h3>
-                <ul>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                </ul>
-              </Col>
-              <Col md={6}>
-                <h3 className="jesse" > This is the name of the food you just ate</h3>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-              </Col>
+              {
+                this.state.data.filter(scan => !scan.eaten).map(scan => (
+                  <Col md={6}>
+                    {console.log(scan['nutrients-data'].full_nutrients[9])}
+                    <h3 className="jesse" >{scan['display-name']}</h3>
+                    <span>{new Date(scan.ts.high_ * 1000).toUTCString()}</span>
+                    <div style={{ marginLeft: 50, marginRight: 50 }}>
+                      <NutritionLabel
+                        servingSize={`${scan['nutrients-data'].serving_weight_grams} grams`}
+                        calories={scan['nutrients-data'].nf_calories}
+                        totalFat={scan['nutrients-data'].nf_total_fat}
+                        saturatedFat={scan['nutrients-data'].nf_saturated_fat}
+                        transFat={scan['nutrients-data'].nf_total_fat - scan['nutrients-data'].nf_saturated_fat}
+                        cholesterol={scan['nutrients-data'].nf_cholesterol}
+                        sodium={scan['nutrients-data'].nf_sodium}
+                        totalCarbs={scan['nutrients-data'].nf_total_carbohydrates}
+                        dietaryFiber={scan['nutrients-data'].nf_dietary_fibers}
+                        sugars={scan['nutrients-data'].nf_sugars}
+                        protein={scan['nutrients-data'].nf_protein}
+                        vitaminA={Dashboard.getPercent(scan['nutrients-data'], 318, 700)}
+                        calcium={Dashboard.getPercent(scan['nutrients-data'], 301, 1000)}
+                        vitaminC={Dashboard.getPercent(scan['nutrients-data'], 401, 90)}
+                        iron={Dashboard.getPercent(scan['nutrients-data'], 303, 16)}
+                      />
+                    </div>
+                  </Col>
+                ))
+              }
             </Row>
-            <hr />
-            <Row>
-              <Col md={6}>
-                <h3 className="jesse" > This is the name of the food you just ate</h3>
-                <ul>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                  <li><b> onthunetohu</b>: netouhoentuheong</li>
-                </ul>
-              </Col>
-              <Col md={6}>
-                <h3 className="jesse" > This is the name of the food you just ate</h3>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-                <li><b> onthunetohu</b>: netouhoentuheong</li>
-              </Col>
-            </Row>
-            <hr />
-
             <h1 style={{ textTransform: 'uppercase' }}>💩 you ate in graph format</h1>
             <Line data={data} />
 
